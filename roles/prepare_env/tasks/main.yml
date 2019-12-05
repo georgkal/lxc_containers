@@ -1,0 +1,19 @@
+
+
+---
+
+- name: Update packages
+  raw: (apt-get update)
+
+- name: Check if Python is installed, if not-->> Install Python 3
+  raw: test -f /usr/bin/python3 || (apt-get update && apt-get install -y python3)
+
+- name: Install addtional tools --> wget, vim, nano, curl
+  package: name={{ item }} state=present
+  with_items: 
+    - wget
+    - vim
+    - nano
+    - curl
+    - python-apt
+    - python3-apt  

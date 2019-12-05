@@ -1,0 +1,20 @@
+
+---
+###########################################################
+# Configure containers that you wnat to be created HERE!!!
+# Substitute the values of name(the name of the container).
+# Value service is the group to which this host belongs.
+#!!! DO not forget to update the groups in your master 
+# playbook!!!!
+###########################################################
+containers:
+  - name: WEBSERVICE_001
+    service: webservers
+  - name: WEBSERVICE_002
+    service: webservers
+
+####################################################
+# Common configuration options:
+####################################################
+# The domain that nginx listens for
+mattermost_domain: test.stemo.bg

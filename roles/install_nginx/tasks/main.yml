@@ -1,0 +1,20 @@
+---
+# Webserver Configuration
+
+
+- name: NGINX | Ensure that nginx PPA is added to Ubuntu
+  apt_repository: repo='ppa:nginx/stable' update_cache=yes
+
+- name: NGINX | Install nginx
+  package: name=nginx state=present
+
+- name: NGINX | Remove default vhost
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: NGINX | Configure vhost using template
+  template: src=nginx_conf.conf dest=/etc/nginx/conf.d/nginx_conf.conf
+  notify:
+    - reload nginx
+
+- name: NGINX | nginx should be running, and enabled at boot
+  service: name=nginx state=started enabled=yes

@@ -1,0 +1,59 @@
+
+
+
+--- 
+
+- name: Install dependencies --> python-lxc
+  apt: name=python-lxc
+
+- name: Install dependencies --> python3-lxc
+  apt: name=python3-lxc
+
+- name: Create and start LXC container/containers
+  lxc_container:
+    name: "{{ item.name }}"
+    container_log: true
+    template: ubuntu
+    state: started
+  with_items: "{{ containers }}"
+  register: containters_info
+
+  #- name: Wait for the network to be setup in the containers
+  #when: containers_info|changed
+  #pause: seconds=10 
+
+- name: Get container IP address
+  lxc_container:
+    name: "{{ item.name }}"
+  with_items: "{{ containers }}"
+#    container_command: ip -f inet addr show eth0 | grep -Po 'inet \K[\d.]+'
+  register: containers_info
+
+#- debug: msg="{{ webserver_001_ip | item2dict}}"
+
+- name: Add Container IP address to inventory file
+  add_host:
+    name: "{{ item.lxc_container.ips.0 }}"
+    groups: "{{ item.item.service }}"
+  with_items: "{{ containers_info.results }}"
+
+  #- name: Create and start LXC container--> WEBSERVER_002
+  #lxc_container:
+  #  name: mattermost
+  #  container_log: true
+  #  template: ubuntu
+  #  state: started
+
+  #- name: Get container WEBSERVER_002 IP address
+  #lxc_container:
+  #  name: WEBSERVER_002
+  #  container_command: ip -f inet addr show eth0 | grep -Po 'inet \K[\d.]+'
+  #register: webserver_002_ip
+
+#- debug: msg="{{ webserver_002_ip | intems2dict}}"
+
+  #- name: Add Container WEBSERVER_001 IP address to host file
+  #add_host:
+  # name: "{{ lxc_container.ips.0 }}"
+  #  groups: webservers
+#  with_items: "{{ webserver_002_ip }}"

@@ -1,0 +1,41 @@
+
+
+####################################################################
+#
+#This is a playbook that will create:
+# - Create container using LXC technology
+# - Setup the the contaiber to be managed via Ansible
+# - Prepare enviroment
+# - Install NGINX
+# - Configure NGINX using template
+# 
+################################################################### 
+
+
+---
+
+- name: Create Containers
+  hosts: localhost
+  connection: local
+  become: yes
+  roles:
+    - create_local_container
+ 
+
+- name: Setup and prepare containers
+  hosts: webservers
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - prepare_env
+
+- name: Install and Configure NGINX
+  hosts: webservers
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - install_nginx 
